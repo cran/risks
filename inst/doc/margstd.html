@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Marginal standardization</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Marginal standardization</h1>
+
+
+
+<div id="the-basics" class="section level1">
+<h1>The basics</h1>
+<p>Marginal standardization, <code>approach = &quot;margstd_delta&quot;</code> and
+<code>approach = &quot;margstd_boot&quot;</code>, makes use of the good
+convergence properties of the logit link, which is also guaranteed to
+result in probabilities within (0; 1).</p>
+<p>After fitting a logistic model, predicted probabilities for each
+observation are obtained for the levels of the exposure variable. Risk
+ratios and risk differences are calculated by contrasting the predicted
+probabilities as ratios or differences. Standard errors and confidence
+intervals are obtained via the delta method or via bootstrapping the
+entire procedure.</p>
+<p>We use the same example data as in the <a href="risks.html#an-example-cohort-study">Get Started vignette</a>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(risks)  <span class="co"># provides riskratio(), riskdiff(), postestimation functions</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)  <span class="co"># For data handling</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(broom)  <span class="co"># For tidy() model summaries</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">data</span>(breastcancer)</span></code></pre></div>
+<p>We fit the same risk difference model as in the <a href="risks.html#adjusted-risk-differences">Get Started vignette</a>,
+this time explicitly specifying
+<code>approach = &quot;margstd_delta&quot;</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>fit_margstd <span class="ot">&lt;-</span> <span class="fu">riskdiff</span>(<span class="at">formula =</span> death <span class="sc">~</span> stage <span class="sc">+</span> receptor, </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>                        <span class="at">data =</span> breastcancer, </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>                        <span class="at">approach =</span> <span class="st">&quot;margstd_delta&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">summary</span>(fit_margstd)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; Risk difference model, fitted via marginal standardization of a logistic model with delta method (margstd_delta).</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; stats::glm(formula = death ~ stage + receptor, family = binomial(link = &quot;logit&quot;), </span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;     data = breastcancer, start = &quot;(no starting values)&quot;)</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; Deviance Residuals: </span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt;    Min      1Q  Median      3Q     Max  </span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt;                                         </span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; Coefficients: (3 not defined because of singularities)</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt;                Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; stageStage I    0.00000    0.00000     NaN      NaN    </span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; stageStage II   0.16303    0.05964   2.734  0.00626 ** </span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; stageStage III  0.57097    0.09962   5.732 9.95e-09 ***</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt;     Null deviance: 228.15  on 191  degrees of freedom</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt; Residual deviance: 185.88  on 188  degrees of freedom</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; AIC: 193.88</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; Number of Fisher Scoring iterations: 4</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; Confidence intervals for coefficients: (delta method)</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt;                     2.5 %    97.5 %</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt; stageStage I   0.00000000 0.0000000</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt; stageStage II  0.04614515 0.2799187</span></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt; stageStage III 0.37571719 0.7662158</span></span></code></pre></div>
+<p>Consistent with earlier results, we observed that women with stage
+III breast cancer have a 57 percentage points higher risk of death,
+adjusting for hormone receptor status.</p>
+<p>Note that coefficients and standard errors are only estimated for the
+exposure variable. Model fit characteristics and predicted values stem
+directly from the underlying logistic model.</p>
+</div>
+<div id="choice-of-exposure-variable" class="section level1">
+<h1>Choice of exposure variable</h1>
+<p>Standardization can only be done over one exposure variable, and thus
+no coefficients are estimated for other variables in the model.</p>
+<ul>
+<li>By default, the first right-hand variable in the model formula will
+be assumed to be the exposure. The variable types <code>logical</code>,
+<code>factor</code>, <code>ordered</code>, and <code>character</code>
+are taken to represent categorical variables.</li>
+<li>Using <code>variable =</code>, a different variable can be
+specified.</li>
+<li>Using <code>at =</code>, levels for contrasts and the order of
+levels can be specified. The first level is used as the reference with a
+risk ratio of 1 or a risk difference of 0. A warning will be shown for
+continuous values if the requested levels exceed the range of data
+(extrapolation).</li>
+</ul>
+<p>Requesting estimates for a different exposure variable, using
+<code>variable = &quot;receptor&quot;</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>fit_margstd2 <span class="ot">&lt;-</span> <span class="fu">riskdiff</span>(<span class="at">formula =</span> death <span class="sc">~</span> stage <span class="sc">+</span> receptor, </span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                         <span class="at">data =</span> breastcancer, </span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                         <span class="at">approach =</span> <span class="st">&quot;margstd_delta&quot;</span>, <span class="at">variable =</span> <span class="st">&quot;receptor&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">summary</span>(fit_margstd2)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; Risk difference model, fitted via marginal standardization of a logistic model with delta method (margstd_delta).</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; stats::glm(formula = death ~ stage + receptor, family = binomial(link = &quot;logit&quot;), </span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;     data = breastcancer, start = &quot;(no starting values)&quot;)</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; Deviance Residuals: </span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;    Min      1Q  Median      3Q     Max  </span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;                                         </span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; Coefficients: (3 not defined because of singularities)</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;              Estimate Std. Error z value Pr(&gt;|z|)  </span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; receptorHigh  0.00000    0.00000     NaN      NaN  </span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; receptorLow   0.16163    0.07454   2.169   0.0301 *</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt;     Null deviance: 228.15  on 191  degrees of freedom</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; Residual deviance: 185.88  on 188  degrees of freedom</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; AIC: 193.88</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; Number of Fisher Scoring iterations: 4</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; Confidence intervals for coefficients: (delta method)</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt;                   2.5 %    97.5 %</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; receptorHigh 0.00000000 0.0000000</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt; receptorLow  0.01554788 0.3077201</span></span></code></pre></div>
+</div>
+<div id="bootstrap-confidence-intervals" class="section level1">
+<h1>Bootstrap confidence intervals</h1>
+<p>Marginal standardization cannot rely on analytical standard error
+formulae. One approach (<code>&quot;margstd_delta&quot;</code>) is the delta
+method. Alternatively, parametric bootstrapping
+(<code>&quot;margstd_boot&quot;</code> with the default,
+<code>bootci = &quot;bca&quot;</code>) can be used: given the initial
+maximum-likelihood estimates of the coefficients and the observed
+predictors, the outcome vector is predicted from a binomial
+distribution. The model is fit again using the predicted outcomes and
+observed predictors. Repeating this process generates the empirical
+distribution of the coefficients.</p>
+<p>Confidence intervals for coefficients are calculated based on
+BC<sub>a</sub> confidence intervals for parametric bootstrapping (Efron
+B, Narasimhan B. The Automatic Construction of Bootstrap Confidence
+Intervals. <a href="https://pubmed.ncbi.nlm.nih.gov/33727780/">J Comput
+Graph Stat 2020;29(3):608-619</a>).</p>
+<p>For comparison purposes, alternative approaches to bootstrapping and
+confidence interval estimation can requested in <code>tidy()</code>,
+<code>summary.margstd()</code>, and <code>confint()</code>:</p>
+<ul>
+<li><code>bootci = &quot;normal&quot;</code>: Normality-based confidence intervals
+after parametric bootstrapping. These may give out-of-range estimates
+for confidence limits.</li>
+<li><code>bootci = &quot;nonpar&quot;</code>: BC<sub>a</sub> intervals after
+<em>nonparametric</em> bootstrapping. Here, the data are resampled,
+rather than the outcome predicted from the model. Especially in the
+small datasets in which regular binomial models with log links may not
+converge and marginal standardization may be the only option, resampling
+the data comes with the risk of empty strata in the resamples, resulting
+in sparse-data bias or model nonconvergence. The resulting confidence
+intervals may be too narrow. This option should be used with
+caution.</li>
+</ul>
+<p>When using <code>tidy()</code> to access model results, the parameter
+<code>bootverbose = TRUE</code> will add bootstrapping parameters and
+properties to the tibble:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>fit_margstd3 <span class="ot">&lt;-</span> <span class="fu">riskdiff</span>(<span class="at">formula =</span> death <span class="sc">~</span> stage <span class="sc">+</span> receptor, </span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>                         <span class="at">data =</span> breastcancer, </span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>                         <span class="at">approach =</span> <span class="st">&quot;margstd_boot&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">summary</span>(fit_margstd3)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; Risk difference model, fitted via marginal standardization of a logistic model with bootstrapping (margstd_boot).</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; stats::glm(formula = death ~ stage + receptor, family = binomial(link = &quot;logit&quot;), </span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;     data = breastcancer, start = &quot;(no starting values)&quot;)</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; Deviance Residuals: </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;    Min      1Q  Median      3Q     Max  </span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;                                         </span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; Coefficients: (3 not defined because of singularities)</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt;                Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; stageStage I    0.00000    0.00000     NaN      NaN    </span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; stageStage II   0.16303    0.06133   2.658  0.00785 ** </span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; stageStage III  0.57097    0.09823   5.813 6.15e-09 ***</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt;     Null deviance: 228.15  on 191  degrees of freedom</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; Residual deviance: 185.88  on 188  degrees of freedom</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; AIC: 193.88</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; Number of Fisher Scoring iterations: 4</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; Confidence intervals for coefficients: (1000 BCa bootstrap repeats)</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt;                      2.5%     97.5%</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; stageStage I           NA        NA</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; stageStage II  0.02144726 0.2737863</span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; stageStage III 0.37966981 0.7484015</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="fu">tidy</span>(fit_margstd3, <span class="at">bootverbose =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>statistic, <span class="sc">-</span>p.value)  <span class="co"># allow the other columns to get printed instead</span></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 10</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co">#&gt;   term       estimate std.error conf.low conf.high bootrepeats bootci jacksd.low</span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;      &lt;dbl[1d&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;</span></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a><span class="co">#&gt; 1 stageStag…    0        0       NA         NA            1000 bca      NA      </span></span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a><span class="co">#&gt; 2 stageStag…    0.163    0.0587   0.0233     0.258        1000 bca       0.00942</span></span>
+<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a><span class="co">#&gt; 3 stageStag…    0.571    0.100    0.357      0.753        1000 bca       0.0146 </span></span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: jacksd.high &lt;dbl&gt;, model &lt;chr&gt;</span></span></code></pre></div>
+<ul>
+<li><code>bootrepeats</code>: Number of bootstrap repeats.</li>
+<li><code>bootci</code>: Type of bootstrap confidence interval
+(<code>bca</code>, <code>normal</code>, or <code>nonpar</code>, see
+above).</li>
+<li><code>jacksd.low</code> and <code>jacksd.high</code>:
+Jackknife-based Monte-Carlo standard errors for the lower and upper
+limits of the confidence interval. Available for <code>bca</code>
+intervals only. If these simulation errors are large compared to the
+desired precision of the confidence limits, then the number of bootstrap
+repeats needs to be substantially increased.</li>
+</ul>
+</div>
+<div id="bootstrap-repeats" class="section level1">
+<h1>Bootstrap repeats</h1>
+<p>The default are (currently) only 1000 bootstrap repeats to reduce
+initial computation time. If the calculation of BC<sub>a</sub>
+confidence intervals fails with an error, and for final, precise
+estimates, the number of repeats should be increased to &gt;&gt;1000.
+Use the option <code>bootrepeats =</code> in <code>summary()</code>,
+<code>tidy()</code>, or <code>confint()</code>.</p>
+<p>For reproducibility, a seed should be set (e.g.,
+<code>set.seed(123)</code>).</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
