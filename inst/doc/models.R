@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -14,11 +14,6 @@ data(breastcancer)
 riskratio(formula = death ~ stage + receptor, 
           data = breastcancer, 
           approach = "glm_startp")
-
-## ----selectapproach2, error = TRUE--------------------------------------------
-riskratio(formula = death ~ stage + receptor, 
-          data = breastcancer, 
-          approach = "glm")
 
 ## ----allmodels----------------------------------------------------------------
 fit_all <- riskratio(formula = death ~ stage + receptor, 

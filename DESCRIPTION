@@ -1,10 +1,10 @@
 Package: risks
 Title: Estimate Risk Ratios and Risk Differences using Regression
-Version: 0.4.2
+Version: 0.4.3
 Authors@R: 
     c(person(given = "Konrad",
              family = "Stopsack",
-             role = c("aut", "cre"),
+             role = c("aut", "cre", "cph"),
              email = "stopsack@post.harvard.edu",
              comment = c(ORCID = "0000-0002-0722-1311")),
       person(given = "Travis",
@@ -24,7 +24,7 @@ Description: Risk ratios and risk differences are estimated using regression
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 URL: https://stopsack.github.io/risks/
 BugReports: https://github.com/stopsack/risks/issues
 Suggests: addreg, covr, knitr, logbin, MASS, rmarkdown, testthat
@@ -33,9 +33,10 @@ Imports: boot, bcaboot, broom, dplyr, purrr, rlang, sandwich, stats,
 VignetteBuilder: knitr
 Depends: R (>= 3.5.0)
 NeedsCompilation: no
-Packaged: 2023-06-12 12:41:09 UTC; stopsack
-Author: Konrad Stopsack [aut, cre] (<https://orcid.org/0000-0002-0722-1311>),
-  Travis Gerke [aut] (<https://orcid.org/0000-0002-9500-8907>)
+Packaged: 2025-05-29 06:00:01 UTC; stopsack
+Author: Konrad Stopsack [aut, cre, cph] (ORCID:
+    <https://orcid.org/0000-0002-0722-1311>),
+  Travis Gerke [aut] (ORCID: <https://orcid.org/0000-0002-9500-8907>)
 Maintainer: Konrad Stopsack <stopsack@post.harvard.edu>
 Repository: CRAN
-Date/Publication: 2023-06-13 08:10:02 UTC
+Date/Publication: 2025-05-30 20:30:02 UTC
